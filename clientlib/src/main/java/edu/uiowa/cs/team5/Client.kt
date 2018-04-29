@@ -29,8 +29,8 @@ class ClientController {
         return loginTask().execute(body).get()
     }
 
-    fun create(patron:Patron): CreateResponse {
-        val body = RequestBody.create(JSON, gson.toJson(CreateRequest(patron)))
+    fun create(username: String, password: String): CreateResponse {
+        val body = RequestBody.create(JSON, gson.toJson(CreateRequest(username,password)))
         return createTask().execute(body).get()
     }
 
