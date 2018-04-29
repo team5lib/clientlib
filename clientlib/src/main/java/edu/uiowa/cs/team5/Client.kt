@@ -14,6 +14,7 @@ class ClientController {
     inline fun <reified T> Gson.fromJson(json: String) = this.fromJson<T>(json, object : TypeToken<T>() {}.type)
     private var URL:String // Emulator IP: 10.0.2.2:8080
     private var loginURL:String
+    private var createURL:String
     private val gson = Gson()
     private val client = OkHttpClient();
     private val JSON = MediaType.parse("application/json; charset=utf-8")
@@ -21,6 +22,7 @@ class ClientController {
     constructor(serverIpAddress:String){
         URL = "http://"+serverIpAddress
         loginURL = URL + "/users/login"
+        createURL = URL + "/users/create"
     }
     fun login(username: String, password: String): LoginResponse {
         val body = RequestBody.create(JSON, gson.toJson(LoginRequest(username, password)))
@@ -35,6 +37,17 @@ class ClientController {
                     .build()
             val response = client.newCall(request).execute()
             return gson.fromJson<LoginResponse>(response.body()!!.string())
+        }
+    }
+
+    private inner class createTask : AsyncTask<RequestBody, Int, CreateResponse>() {
+        override fun doInBackground(vararg re: RequestBody): CreateResponse {
+            val request = Request.Builder()
+                    .url(createURL)
+                    .post(re[0])
+                    .build()
+            val response = client.newCall(request).execute()
+            return gson.fromJson<CreateResponse>(response.body()!!.string())
         }
     }
 }
