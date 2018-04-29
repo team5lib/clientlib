@@ -34,7 +34,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'com.github.team5lib:classlib:342c72cb66'
+    implementation 'com.github.team5lib:classlib:c420749a4e'
     implementation "org.jetbrains.anko:anko-commons:0.10.4"
 }
 repositories {
