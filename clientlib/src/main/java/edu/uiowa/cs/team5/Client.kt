@@ -29,6 +29,11 @@ class ClientController {
         return loginTask().execute(body).get()
     }
 
+    fun create(patron:Patron): CreateResponse {
+        val body = RequestBody.create(JSON, gson.toJson(CreateRequest(patron)))
+        return createTask().execute(body).get()
+    }
+    
     private inner class loginTask : AsyncTask<RequestBody, Int, LoginResponse>() {
         override fun doInBackground(vararg re: RequestBody): LoginResponse {
             val request = Request.Builder()
