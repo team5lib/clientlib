@@ -15,14 +15,16 @@ class ClientController {
     private var URL:String // Emulator IP: 10.0.2.2:8080
     private var loginURL:String
     private var createURL:String
+    private var submitURL:String
     private val gson = Gson()
     private val client = OkHttpClient();
     private val JSON = MediaType.parse("application/json; charset=utf-8")
 
     constructor(serverIpAddress:String){
         URL = "http://"+serverIpAddress
-        loginURL = URL + "/users/login"
-        createURL = URL + "/users/create"
+        loginURL = URL + "/main/login"
+        createURL = URL + "/main/create"
+        submitURL = URL + "/main/submit"
     }
     fun login(username: String, password: String): LoginResponse {
         val body = RequestBody.create(JSON, gson.toJson(LoginRequest(username, password)))
@@ -34,14 +36,24 @@ class ClientController {
         return createTask().execute(body).get()
     }
 
+    fun submit(patron: Patron): SubmitResponse {
+        val body = RequestBody.create(JSON, gson.toJson(SubmitRequest(patron)))
+        return submitTask().execute(body).get()
+    }
+
+
     private inner class loginTask : AsyncTask<RequestBody, Int, LoginResponse>() {
         override fun doInBackground(vararg re: RequestBody): LoginResponse {
             val request = Request.Builder()
                     .url(loginURL)
                     .post(re[0])
                     .build()
-            val response = client.newCall(request).execute()
-            return gson.fromJson<LoginResponse>(response.body()!!.string())
+            try {
+                val response = client.newCall(request).execute()
+                return gson.fromJson<LoginResponse>(response.body()!!.string())
+            }catch(e:Exception){
+                return LoginResponse("Connection Failed!",null,false)
+            }
         }
     }
 
@@ -51,8 +63,27 @@ class ClientController {
                     .url(createURL)
                     .post(re[0])
                     .build()
-            val response = client.newCall(request).execute()
-            return gson.fromJson<CreateResponse>(response.body()!!.string())
+            try{
+                val response = client.newCall(request).execute()
+                return gson.fromJson<CreateResponse>(response.body()!!.string())
+            }catch(e:Exception){
+                return CreateResponse("Connection Failed!",null)
+            }
+        }
+    }
+
+    private inner class submitTask : AsyncTask<RequestBody, Int, SubmitResponse>() {
+        override fun doInBackground(vararg re: RequestBody): SubmitResponse {
+            val request = Request.Builder()
+                    .url(submitURL)
+                    .post(re[0])
+                    .build()
+            try{
+                val response = client.newCall(request).execute()
+                return gson.fromJson<SubmitResponse>(response.body()!!.string())
+            }catch(e:Exception){
+                return SubmitResponse("Connection Failed",null)
+            }
         }
     }
 }
