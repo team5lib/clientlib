@@ -36,8 +36,8 @@ class ClientController {
         return createTask().execute(body).get()
     }
 
-    fun submit(patron: Patron): SubmitResponse {
-        val body = RequestBody.create(JSON, gson.toJson(SubmitRequest(patron)))
+    fun submit(username:String,surveyList: SurveyList): SubmitResponse {
+        val body = RequestBody.create(JSON, gson.toJson(SubmitRequest(username,surveyList)))
         return submitTask().execute(body).get()
     }
 
